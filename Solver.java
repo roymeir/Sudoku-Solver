@@ -1,193 +1,187 @@
-    /*Java Program to solve Sudoku problem using Backtracking*/
-import java.util.Scanner; 
-public class Solver
-{
-	public static boolean isValid(int[][] puzzle,int row, int col,int input)
-	{
-		// check if row contains the input
-		for (int d = 0; d < puzzle.length; d++)
-		{
-			
-			/* return false if input already appears in row*/
-			if (puzzle[row][d] == input) {
-				return false;
-			}
-		}
-		// check if column contains the input
-		for (int r = 0; r < puzzle.length; r++)
-		{
-			 /* return false if input already appears in column*/
-			if (puzzle[r][col] == input)
-			{
-				return false;
-			}
-		}
+
+/*Java Program to solve Sudoku problem using Backtracking*/
+import java.util.Scanner;
+
+public class Solver {
+    public static boolean isValid(int[][] puzzle, int row, int col, int input) {
+        // check if row contains the input
+        for (int d = 0; d < puzzle.length; d++) {
+
+            /* return false if input already appears in row */
+            if (puzzle[row][d] == input) {
+                return false;
+            }
+        }
+        // check if column contains the input
+        for (int r = 0; r < puzzle.length; r++) {
+            /* return false if input already appears in column */
+            if (puzzle[r][col] == input) {
+                return false;
+            }
+        }
 
         // check if square contains the input
-		int sqrt = (int)Math.sqrt(puzzle.length);
-		int bRow = row - row % sqrt;
-		int bCol = col - col % sqrt;
-		for (int r = bRow;
-			r < bRow + sqrt; r++)
-		{
-			for (int d = bCol;
-				d < bCol + sqrt; d++)
-			{
-				if (puzzle[r][d] == input)
-				{
-					return false;
-				}
-			}
-		}
+        int sqrt = (int) Math.sqrt(puzzle.length);
+        int bRow = row - row % sqrt;
+        int bCol = col - col % sqrt;
+        for (int r = bRow; r < bRow + sqrt; r++) {
+            for (int d = bCol; d < bCol + sqrt; d++) {
+                if (puzzle[r][d] == input) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
-		
-    public static int[][] sudokuGenerator(int N){
-        /*gives user option to create customized sudoko board. Uses the isValid function 
-        to make sure user input is valid before progressing to the next cell. The only input is the size of the board.
-        If the user inputs 0, that means the given cell is to be left empty.*/
-        int[][] sudoku_board = new int [N][N];
-        for (int i=0;i<N;i++){
-            for (int j=0; j<N; j++){
-                System.out.println("Enter value of cell "+(i+1)+" "+(j+1));
+
+    public static int[][] sudokuGenerator(int N) {
+        /*
+         * gives user option to create customized sudoko board. Uses the isValid
+         * function
+         * to make sure user input is valid before progressing to the next cell. The
+         * only input is the size of the board.
+         * If the user inputs 0, that means the given cell is to be left empty.
+         */
+        int[][] sudoku_board = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.println("Enter value of cell " + (i + 1) + " " + (j + 1));
                 try (Scanner scan = new Scanner(System.in)) {
                     int attempt = scan.nextInt();
-                    if (attempt == 0){
+                    if (attempt == 0) {
                         sudoku_board[i][j] = attempt;
-                    }
-                    else{
-                        while (!isValid(sudoku_board, i, j, attempt)){
+                    } else {
+                        while (!isValid(sudoku_board, i, j, attempt)) {
                             System.out.println("This entry is invalid. Try another number: ");
                             attempt = scan.nextInt();
                         }
                     }
                     sudoku_board[i][j] = attempt;
-                }    
+                }
             }
         }
         return sudoku_board;
     }
 
-    public static int[][] random_sudokuGenerator(int N, String difficulty){
-        /* Generates a random Sudoku board according to difficulty level set by user. 
-         * You can essentially set a level, receive a random sudoku board, try to solve it and 
-         * check your answer by letting the computer solve it. 
-        */
-        int not_zeros = 0, input = 0, i_0 = 0, j_0 = 0, square_size = N*N;
+    public static int[][] random_sudokuGenerator(int N, String difficulty) {
+        /*
+         * Generates a random Sudoku board according to difficulty level set by user.
+         * You can essentially set a level, receive a random sudoku board, try to solve
+         * it and
+         * check your answer by letting the computer solve it.
+         */
+        int not_zeros = 0, input = 0, i_0 = 0, j_0 = 0, square_size = N * N;
 
-        if (difficulty == "Hard"){
-            not_zeros = square_size - (int)Math.ceil(square_size * 3 / 4);
-        }
-        else if (difficulty == "Medium"){
-            not_zeros = square_size - (int)Math.ceil(square_size / 2);
-        }
-        else{
-            not_zeros = square_size - (int)Math.ceil(square_size / 3);
+        if (difficulty == "Hard") {
+            not_zeros = square_size - (int) Math.ceil(square_size * 3 / 4);
+        } else if (difficulty == "Medium") {
+            not_zeros = square_size - (int) Math.ceil(square_size / 2);
+        } else {
+            not_zeros = square_size - (int) Math.ceil(square_size / 3);
         }
 
-        System.out.println(not_zeros +" This is the number of non zero elements");
+        int[][] sudoku_board = new int[N][N];
+        while (not_zeros > 0) {
+            /*
+             * Adds digits in random locations on the board.
+             * We first make sure the insertion is valid.
+             * If it isn't, we skip the insertion and randomize again.
+             */
+            i_0 = (int) (Math.random() * 9) + 1;
+            j_0 = (int) (Math.random() * 9) + 1;
+            input = (int) (Math.random() * 9) + 1;
 
-        int[][] sudoku_board = new int [N][N];
-        while (not_zeros > 0){
-            i_0 = (int)(Math.random() * 9) + 1;
-            j_0 = (int)(Math.random() * 9) + 1;
-            input = (int)(Math.random() * 9) + 1;
-           
-            if (isValid(sudoku_board, i_0 - 1, j_0 - 1, input)){
+            if (isValid(sudoku_board, i_0 - 1, j_0 - 1, input)) {
                 sudoku_board[i_0 - 1][j_0 - 1] = input;
                 not_zeros--;
             }
-            
+
         }
-            return sudoku_board;
-        }
-        
-	
-    public static boolean solve_sudoku(int[][]puzzle, int N){
-        /* This is the actual code that solves the puzzle.
+        return sudoku_board;
+    }
+
+    public static boolean solve_sudoku(int[][] puzzle, int N) {
+        /*
+         * This is the actual code that solves the puzzle.
          * If no solution exists, the function will return false.
          */
         int row = -1;
-		int col = -1;
+        int col = -1;
         /* Initialized to -1 so as to not point to a specific row or column */
-		boolean isEmpty = true;
-		for (int i = 0; i < N; i++)
-		{
-			for (int j = 0; j < N; j++)
-			{
-				if (puzzle[i][j] == 0)
-				{
+        boolean isEmpty = true;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (puzzle[i][j] == 0) {
                     /* First instance of an empty cell, represented by a 0 */
-					row = i;
-					col = j;
-					isEmpty = false;
-					break;
-				}
-			}
-
-			if (!isEmpty) 
-            { /* Break out of the external loop and not only the internal one */
-				break;
-			}
-		}
-		/* If we have no more empty cells, return true.
-         * This will serve as the ending point of all recursive calls. 
-         */
-		if (isEmpty)
-		{
-			return true;
-		}
-		/* If we do have empty cells, we use backtracking to enter the correct digit in every empty cell */ 
-		for (int number = 1; number <= N; number++)
-		{
-			if (isValid(puzzle, row, col, number))
-			{
-				puzzle[row][col] = number;
-				if (solve_sudoku(puzzle, N))
-				{
-					/* This will return true if the value we entered is correct. It may have been correct on entry,
-                    but it could create an error once all empty cells are filled. */ 
-					return true;
-				}
-				else
-				{
-					/* The addition was valid at the time of insertion, but once other cells were filled we found a problem.
-                     * This means the value we put in the cell was not the right one and we empty the cell to try again.
-                     */
-					puzzle[row][col] = 0;
-				}
-			}
-		}
-		return false;   //If we've reached this point, there is not solution available for the given board
-    }
-    public static void print_puzzle(int [][]puzzle, int N){
-        for (int i=0;i<9;i++)
-        {    
-            for (int j=0;j<9;j++)
-            {
-                System.out.print(puzzle[i][j]+" ");
+                    row = i;
+                    col = j;
+                    isEmpty = false;
+                    break;
+                }
             }
-            System.out.println();  
-        }       
+
+            if (!isEmpty) { /* Break out of the external loop and not only the internal one */
+                break;
+            }
+        }
+        /*
+         * If we have no more empty cells, return true.
+         * This will serve as the ending point of all recursive calls.
+         */
+        if (isEmpty) {
+            return true;
+        }
+        /*
+         * If we do have empty cells, we use backtracking to enter the correct digit in
+         * every empty cell
+         */
+        for (int number = 1; number <= N; number++) {
+            if (isValid(puzzle, row, col, number)) {
+                puzzle[row][col] = number;
+                if (solve_sudoku(puzzle, N)) {
+                    /*
+                     * This will return true if the value we entered is correct. It may have been
+                     * correct on entry,
+                     * but it could create an error once all empty cells are filled.
+                     */
+                    return true;
+                } else {
+                    /*
+                     * The addition was valid at the time of insertion, but once other cells were
+                     * filled we found a problem.
+                     * This means the value we put in the cell was not the right one and we empty
+                     * the cell to try again.
+                     */
+                    puzzle[row][col] = 0;
+                }
+            }
+        }
+        return false; // If we've reached this point, there is not solution available for the given
+                      // board
     }
+
+    public static void print_puzzle(int[][] puzzle, int N) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                System.out.print(puzzle[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     // Driver Code
-	public static void main(String args[])
-	{
+    public static void main(String args[]) {
         int[][] puzzle = random_sudokuGenerator(9, "Hard");
         System.out.println("Input board before solution:");
         print_puzzle(puzzle, puzzle.length);
         System.out.println("");
 
-        if (solve_sudoku(puzzle, puzzle.length))    //Making sure the board was created successfully
+        if (solve_sudoku(puzzle, puzzle.length)) // Making sure the board was created successfully
         {
             System.out.println("Board after solution: ");
             print_puzzle(puzzle, puzzle.length);
-        }
-        else
-           {
+        } else {
             System.out.println("This can't be solved");
-           }
-        
-	}
+        }
+    }
 }
-
