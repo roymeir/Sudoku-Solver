@@ -67,6 +67,41 @@ public class Solver
         }
         return sudoku_board;
     }
+
+    public static int[][] random_sudokuGenerator(int N, String difficulty){
+        /* Generates a random Sudoku board according to difficulty level set by user. 
+         * You can essentially set a level, receive a random sudoku board, try to solve it and 
+         * check your answer by letting the computer solve it. 
+        */
+        int not_zeros = 0, input = 0, i_0 = 0, j_0 = 0, square_size = N*N;
+
+        if (difficulty == "Hard"){
+            not_zeros = square_size - (int)Math.ceil(square_size * 3 / 4);
+        }
+        else if (difficulty == "Medium"){
+            not_zeros = square_size - (int)Math.ceil(square_size / 2);
+        }
+        else{
+            not_zeros = square_size - (int)Math.ceil(square_size / 3);
+        }
+
+        System.out.println(not_zeros +" This is the number of non zero elements");
+
+        int[][] sudoku_board = new int [N][N];
+        while (not_zeros > 0){
+            i_0 = (int)(Math.random() * 9) + 1;
+            j_0 = (int)(Math.random() * 9) + 1;
+            input = (int)(Math.random() * 9) + 1;
+           
+            if (isValid(sudoku_board, i_0 - 1, j_0 - 1, input)){
+                sudoku_board[i_0 - 1][j_0 - 1] = input;
+                not_zeros--;
+            }
+            
+        }
+            return sudoku_board;
+        }
+        
 	
     public static boolean solve_sudoku(int[][]puzzle, int N){
         /* This is the actual code that solves the puzzle.
@@ -126,7 +161,6 @@ public class Solver
 		return false;   //If we've reached this point, there is not solution available for the given board
     }
     public static void print_puzzle(int [][]puzzle, int N){
-        System.out.println("Board after solution:");
         for (int i=0;i<9;i++)
         {    
             for (int j=0;j<9;j++)
@@ -139,29 +173,21 @@ public class Solver
     // Driver Code
 	public static void main(String args[])
 	{
-        int[][] puzzle = new int[][] {
-			{ 3, 0, 5, 4, 0, 2, 0, 6, 0 },
-			{ 4, 9, 0, 7, 6, 0, 1, 0, 8 },
-			{ 6, 0, 0, 1, 0, 3, 2, 4, 5 },
-			{ 0, 0, 3, 9, 0, 0, 5, 8, 0 },
-			{ 9, 6, 0, 0, 5, 8, 7, 0, 3 },
-			{ 0, 8, 1, 3, 0, 4, 0, 9, 2 },
-			{ 0, 5, 0, 6, 0, 1, 4, 0, 0 },
-			{ 2, 0, 0, 5, 4, 9, 0, 7, 0 },
-			{ 1, 4, 9, 0, 0, 7, 3, 0, 6 }
-		};
+        int[][] puzzle = random_sudokuGenerator(9, "Hard");
         System.out.println("Input board before solution:");
         print_puzzle(puzzle, puzzle.length);
         System.out.println("");
 
         if (solve_sudoku(puzzle, puzzle.length))    //Making sure the board was created successfully
         {
+            System.out.println("Board after solution: ");
             print_puzzle(puzzle, puzzle.length);
         }
         else
            {
             System.out.println("This can't be solved");
            }
+        
 	}
 }
 
