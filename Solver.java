@@ -1,9 +1,80 @@
-
 /*Java Program to solve Sudoku problem using Backtracking*/
 import java.util.Scanner;
 
+import javax.swing.*;
+import java.awt.event.*;
+
 public class Solver {
-    public static boolean isValid(int[][] puzzle, int row, int col, int input) {
+
+    int[][] puzzle;
+    int N; // number of columns/rows.
+    int SRN; // square root of N
+    int K; // No. Of missing digits
+
+    // Constructor
+    Solver(int N, int K) {
+        this.N = N;
+        this.K = K;
+
+        // Compute square root of N
+        Double SRNd = Math.sqrt(N);
+        SRN = SRNd.intValue();
+
+        puzzle = new int[N][N];
+    }
+
+    // Sudoku Generator
+    public void fillValues() {
+        // Fill the diagonal of SRN x SRN matrices
+        fillDiagonal();
+
+        // Fill remaining blocks
+        fillRemaining(0, SRN);
+
+        // Remove Randomly K digits to make game
+        removeKDigits();
+    }
+
+    // Fill the diagonal SRN number of SRN x SRN matrices
+    void fillDiagonal() {
+
+        for (int i = 0; i < N; i = i + SRN)
+
+            // for diagonal box, start coordinates->i==j
+            fillBox(i, i);
+    }
+
+    // Returns false if given 3 x 3 block contains num.
+    boolean unUsedInBox(int rowStart, int colStart, int num) {
+        for (int i = 0; i < SRN; i++)
+            for (int j = 0; j < SRN; j++)
+                if (puzzle[rowStart + i][colStart + j] == num)
+                    return false;
+
+        return true;
+    }
+
+    // Fill a 3 x 3 matrix.
+    void fillBox(int row, int col) {
+        int num;
+        for (int i = 0; i < SRN; i++) {
+            for (int j = 0; j < SRN; j++) {
+                do {
+                    num = randomGenerator(N);
+                }
+                while (!unUsedInBox(row, col, num));
+
+                puzzle[row + i][col + j] = num;
+            }
+        }
+    }
+
+    // Random generator
+    int randomGenerator(int num) {
+        return (int) Math.floor((Math.random() * num + 1));
+    }
+
+    boolean isValid( /*int[][] puzzle,*/ int row, int col, int input) {
         // check if row contains the input
         for (int d = 0; d < puzzle.length; d++) {
 
@@ -34,73 +105,45 @@ public class Solver {
         return true;
     }
 
-    public static int[][] sudokuGenerator(int N) {
-        /*
-         * gives user option to create customized sudoko board. Uses the isValid
-         * function
-         * to make sure user input is valid before progressing to the next cell. The
-         * only input is the size of the board.
-         * If the user inputs 0, that means the given cell is to be left empty.
-         */
-        int[][] sudoku_board = new int[N][N];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                System.out.println("Enter value of cell " + (i + 1) + " " + (j + 1));
-                try (Scanner scan = new Scanner(System.in)) {
-                    int attempt = scan.nextInt();
-                    if (attempt == 0) {
-                        sudoku_board[i][j] = attempt;
-                    } else {
-                        while (!isValid(sudoku_board, i, j, attempt)) {
-                            System.out.println("This entry is invalid. Try another number: ");
-                            attempt = scan.nextInt();
-                        }
-                    }
-                    sudoku_board[i][j] = attempt;
-                }
-            }
+    // A recursive function to fill remaining
+    // matrix
+    boolean fillRemaining(int i, int j) {
+        // System.out.println(i+" "+j);
+        if (j >= N && i < N - 1) {
+            i = i + 1;
+            j = 0;
         }
-        return sudoku_board;
-    }
+        if (i >= N && j >= N)
+            return true;
 
-    public static int[][] random_sudokuGenerator(int N, String difficulty) {
-        /*
-         * Generates a random Sudoku board according to difficulty level set by user.
-         * You can essentially set a level, receive a random sudoku board, try to solve
-         * it and
-         * check your answer by letting the computer solve it.
-         */
-        int not_zeros = 0, input = 0, i_0 = 0, j_0 = 0, square_size = N * N;
-
-        if (difficulty == "Hard") {
-            not_zeros = square_size - (int) Math.ceil(square_size * 3 / 4);
-        } else if (difficulty == "Medium") {
-            not_zeros = square_size - (int) Math.ceil(square_size / 2);
+        if (i < SRN) {
+            if (j < SRN)
+                j = SRN;
+        } else if (i < N - SRN) {
+            if (j == (int)(i / SRN) * SRN)
+                j = j + SRN;
         } else {
-            not_zeros = square_size - (int) Math.ceil(square_size / 3);
-        }
-
-        int[][] sudoku_board = new int[N][N];
-        while (not_zeros > 0) {
-            /*
-             * Adds digits in random locations on the board.
-             * We first make sure the insertion is valid.
-             * If it isn't, we skip the insertion and randomize again.
-             */
-            i_0 = (int) (Math.random() * 9) + 1;
-            j_0 = (int) (Math.random() * 9) + 1;
-            input = (int) (Math.random() * 9) + 1;
-
-            if (isValid(sudoku_board, i_0 - 1, j_0 - 1, input)) {
-                sudoku_board[i_0 - 1][j_0 - 1] = input;
-                not_zeros--;
+            if (j == N - SRN) {
+                i = i + 1;
+                j = 0;
+                if (i >= N)
+                    return true;
             }
-
         }
-        return sudoku_board;
+
+        for (int num = 1; num <= N; num++) {
+            if (isValid(i, j, num)) {
+                puzzle[i][j] = num;
+                if (fillRemaining(i, j + 1))
+                    return true;
+
+                puzzle[i][j] = 0;
+            }
+        }
+        return false;
     }
 
-    public static boolean solve_sudoku(int[][] puzzle, int N) {
+    boolean solve_sudoku( /*int[][] puzzle, int N*/ ) {
         /*
          * This is the actual code that solves the puzzle.
          * If no solution exists, the function will return false.
@@ -120,7 +163,8 @@ public class Solver {
                 }
             }
 
-            if (!isEmpty) { /* Break out of the external loop and not only the internal one */
+            if (!isEmpty) {
+                /* Break out of the external loop and not only the internal one */
                 break;
             }
         }
@@ -136,9 +180,9 @@ public class Solver {
          * every empty cell
          */
         for (int number = 1; number <= N; number++) {
-            if (isValid(puzzle, row, col, number)) {
+            if (isValid(row, col, number)) {
                 puzzle[row][col] = number;
-                if (solve_sudoku(puzzle, N)) {
+                if (solve_sudoku( /*puzzle, N*/ )) {
                     /*
                      * This will return true if the value we entered is correct. It may have been
                      * correct on entry,
@@ -157,31 +201,86 @@ public class Solver {
             }
         }
         return false; // If we've reached this point, there is not solution available for the given
-                      // board
+        // board
     }
 
-    public static void print_puzzle(int[][] puzzle, int N) {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                System.out.print(puzzle[i][j] + " ");
+    // Remove the K no. of digits to
+    // complete game
+    public void removeKDigits() {
+        int count = K;
+        while (count != 0) {
+            int cellId = randomGenerator(N * N) - 1;
+
+            // System.out.println(cellId);
+            // extract coordinates i and j
+            int i = (cellId / N);
+            int j = cellId % 9;
+            if (j != 0)
+                j = j - 1;
+
+            // System.out.println(i+" "+j);
+            if (puzzle[i][j] != 0) {
+                count--;
+                puzzle[i][j] = 0;
             }
+        }
+    }
+
+    // Print sudoku
+    public void printSudoku() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++)
+                System.out.print(puzzle[i][j] + " ");
             System.out.println();
         }
+        System.out.println();
+    }
+    public static void play() {
+        System.out.println("Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n");
+        System.out.println("Choose your desired difficulty:\nFor Hard, enter 1.\nFor Medium, press 2.\nFor Easy, press 3.\nIf your input doesn't match one of these digits, the board generated will be on easy mode.");
+        Scanner scan = new Scanner(System.in);
+        int level = scan.nextInt();
+        int N = 9, K = 0;
+        switch (level) {
+            case 1:
+                K = 50;
+                break;
+            case 2:
+                K = 35;
+                break;
+
+            default:
+                K = 20;
+                break;
+        }
+        Solver sudoku = new Solver(N, K);
+        sudoku.fillValues();
+        System.out.println();
+        sudoku.printSudoku();
+
+        button(sudoku);
+    }
+    public static void button(Solver sudoku) {
+        JFrame frame = new JFrame("Click Button To Show Solution");
+        JButton btn = new JButton("Solution");
+        btn.setBounds(70, 80, 100, 30);
+        //Change button text on click
+        btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                sudoku.solve_sudoku();
+                sudoku.printSudoku();
+            }
+        });
+        frame.add(btn);
+        frame.setSize(250, 250);
+        frame.setLayout(null);
+        frame.setVisible(true);
+
     }
 
-    // Driver Code
-    public static void main(String args[]) {
-        int[][] puzzle = random_sudokuGenerator(9, "Hard");
-        System.out.println("Input board before solution:");
-        print_puzzle(puzzle, puzzle.length);
-        System.out.println("");
 
-        if (solve_sudoku(puzzle, puzzle.length)) // Making sure the board was created successfully
-        {
-            System.out.println("Board after solution: ");
-            print_puzzle(puzzle, puzzle.length);
-        } else {
-            System.out.println("This can't be solved");
-        }
+    // Driver code
+    public static void main(String[] args) {
+        play();
     }
 }
