@@ -1,10 +1,31 @@
 /*Java Program to solve Sudoku problem using Backtracking*/
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
 
-public class Solver {
+// import java.awt.Color;
+// import java.awt.GridBagLayout;
+// import java.awt.GridLayout;
+
+// import javax.swing.BorderFactory;
+// import javax.swing.JFrame;
+// import javax.swing.JPanel;
+// import javax.swing.JTextField;
+// import javax.swing.SwingUtilities;
+// import javax.swing.border.Border;
+
+
+// /* new imports, might delete */
+// import javax.swing.border.Border;
+// import javax.swing.border.CompoundBorder;
+// import javax.swing.border.EmptyBorder;
+// import javax.swing.border.LineBorder;
+
+// import java.awt.*;
+
+public class Solver extends Board {
 
     int[][] puzzle;
     int N; // number of columns/rows.
@@ -235,42 +256,51 @@ public class Solver {
         }
         System.out.println();
     }
+    public static void fillTable(int[][] puzzle, JTable table){
+        for (int i=0;i<puzzle.length;i++){
+            for (int j=0;j<puzzle[0].length;j++){
+
+            }
+        }
+    }
     public static void play() {
         System.out.println("Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n");
         System.out.println("Choose your desired difficulty:\nFor Hard, enter 1.\nFor Medium, press 2.\nFor Easy, press 3.\nIf your input doesn't match one of these digits, the board generated will be on easy mode.");
-        Scanner scan = new Scanner(System.in);
-        int level = scan.nextInt();
-        int N = 9, K = 0;
-        switch (level) {
-            case 1:
-                K = 50;
-                break;
-            case 2:
-                K = 35;
-                break;
+        try (Scanner scan = new Scanner(System.in)) {
+            int level = scan.nextInt();
+            int N = 9, K = 0;
+            switch (level) {
+                case 1:
+                    K = 50;
+                    break;
+                case 2:
+                    K = 35;
+                    break;
 
-            default:
-                K = 20;
-                break;
+                default:
+                    K = 20;
+                    break;
+            }
+            Solver sudoku = new Solver(N, K);
+            sudoku.fillValues();
+            createBoard(sudoku.puzzle);
+            System.out.println();
+            sudoku.printSudoku();
+
+            // button(sudoku);
         }
-        Solver sudoku = new Solver(N, K);
-        sudoku.fillValues();
-        System.out.println();
-        sudoku.printSudoku();
-
-        button(sudoku);
     }
     public static void button(Solver sudoku) {
         JFrame frame = new JFrame("Click Button To Show Solution");
         JButton btn = new JButton("Solution");
         btn.setBounds(70, 80, 100, 30);
         //Change button text on click
-        btn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                sudoku.solve_sudoku();
-                sudoku.printSudoku();
-            }
-        });
+        // btn.addActionListener(new ActionListener() {
+        //     public void actionPerformed(ActionEvent ae) {
+        //         sudoku.solve_sudoku();
+        //         sudoku.printSudoku();
+        //     }
+        // });
         frame.add(btn);
         frame.setSize(250, 250);
         frame.setLayout(null);
@@ -282,5 +312,6 @@ public class Solver {
     // Driver code
     public static void main(String[] args) {
         play();
+        
     }
 }
