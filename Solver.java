@@ -1,6 +1,4 @@
 /*Java Program to solve Sudoku problem using Backtracking*/
-import java.util.Scanner;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.event.ActionEvent;
@@ -9,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 
 
-public class Solver extends Board implements ActionListener {
+public class Solver /*extends Board*/ implements ActionListener {
 
     int[][] puzzle;
     int N; // number of columns/rows.
@@ -215,15 +213,11 @@ public class Solver extends Board implements ActionListener {
         int count = K;
         while (count != 0) {
             int cellId = randomGenerator(N * N) - 1;
-
-            // System.out.println(cellId);
-            // extract coordinates i and j
             int i = (cellId / N);
             int j = cellId % 9;
             if (j != 0)
                 j = j - 1;
 
-            // System.out.println(i+" "+j);
             if (puzzle[i][j] != 0) {
                 count--;
                 puzzle[i][j] = 0;
@@ -231,15 +225,6 @@ public class Solver extends Board implements ActionListener {
         }
     }
 
-    // Print sudoku
-    public void printSudoku() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++)
-                System.out.print(puzzle[i][j] + " ");
-            System.out.println();
-        }
-        System.out.println();
-    }
     public static void fillTable(int[][] puzzle, JTable table) {
         for (int i = 0; i < puzzle.length; i++) {
             for (int j = 0; j < puzzle[0].length; j++) {
@@ -248,8 +233,6 @@ public class Solver extends Board implements ActionListener {
         }
     }
     public static void play(int level) {
-        // System.out.println("Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n");
-        // System.out.println("Choose your desired difficulty:\nFor Hard, enter 1.\nFor Medium, press 2.\nFor Easy, press 3.\nIf your input doesn't match one of these digits, the board generated will be on easy mode.");
         int N = 9, K = 0;
         switch (level) {
             case 1:
@@ -266,9 +249,6 @@ public class Solver extends Board implements ActionListener {
         Solver sudoku = new Solver(N, K);
         sudoku.fillValues();
         createBoard(sudoku.puzzle);
-        // createBoard(sudoku.puzzle);
-        // System.out.println();
-        // sudoku.printSudoku();
     }
 
     private static void createWindow() {
@@ -292,19 +272,14 @@ public class Solver extends Board implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 String result = (String) JOptionPane.showInputDialog(
                     frame,
-                    "Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n\nChoose your desired difficulty:\n\tFor Hard, enter 1.\n\tFor Medium, press 2.\n\tFor Easy, press 3.\nIf your input doesn't match one of these digits, the board generated will be on easy mode.",
+                    "Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n\nChoose your desired difficulty:\n\tHard: 1\n\tMedium: 2\n\tEasy: 3\nIf your input doesn't match one of these digits, the board generated will be on easy mode.",
                     "Swing Tester",
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     null,
-                    "1"
+                    "3"
                 );
                 play(Integer.parseInt(result));
-                // if (result != null && result.length() > 0) {
-                //     label.setText("You selected:" + result);
-                // } else {
-                //     label.setText("None selected");
-                // }
             }
         });
 
@@ -342,8 +317,6 @@ public class Solver extends Board implements ActionListener {
         JTextField difficulty = new JTextField(20);
         difficulty.setBounds(100, 20, 165, 25);
         input.add(difficulty);
-        String level = difficulty.getText();
-
         final JFrame frame = new JFrame("Sudoku");
         frame.add(input);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -358,13 +331,6 @@ public class Solver extends Board implements ActionListener {
         JFrame frame = new JFrame("Click Button To Show Solution");
         JButton btn = new JButton("Solution");
         btn.setBounds(70, 80, 100, 30);
-        //Change button text on click
-        // btn.addActionListener(new ActionListener() {
-        //     public void actionPerformed(ActionEvent ae) {
-        //         sudoku.solve_sudoku();
-        //         sudoku.printSudoku();
-        //     }
-        // });
         frame.add(btn);
         frame.setSize(250, 250);
         frame.setLayout(null);
