@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 
 
-public class Solver extends Board implements ActionListener{
+public class Solver extends Board implements ActionListener {
 
     int[][] puzzle;
     int N; // number of columns/rows.
@@ -250,25 +250,25 @@ public class Solver extends Board implements ActionListener{
     public static void play(int level) {
         // System.out.println("Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n");
         // System.out.println("Choose your desired difficulty:\nFor Hard, enter 1.\nFor Medium, press 2.\nFor Easy, press 3.\nIf your input doesn't match one of these digits, the board generated will be on easy mode.");
-            int N = 9, K = 0;
-            switch (level) {
-                case 1:
-                    K = 50;
-                    break;
-                case 2:
-                    K = 35;
-                    break;
+        int N = 9, K = 0;
+        switch (level) {
+            case 1:
+                K = 50;
+                break;
+            case 2:
+                K = 35;
+                break;
 
-                default:
-                    K = 20;
-                    break;
-            }
-            Solver sudoku = new Solver(N, K);
-            sudoku.fillValues();
-            createBoard(sudoku.puzzle);
-            // createBoard(sudoku.puzzle);
-            // System.out.println();
-            // sudoku.printSudoku();
+            default:
+                K = 20;
+                break;
+        }
+        Solver sudoku = new Solver(N, K);
+        sudoku.fillValues();
+        createBoard(sudoku.puzzle);
+        // createBoard(sudoku.puzzle);
+        // System.out.println();
+        // sudoku.printSudoku();
     }
 
     private static void createWindow() {
@@ -320,7 +320,11 @@ public class Solver extends Board implements ActionListener{
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 final JTextField field = new JTextField(2);
-                field.setText(puzzle[i][j] + "");
+                if (puzzle[i][j] != 0) {
+                    field.setText(puzzle[i][j] + "");
+                } else {
+                    field.setText("");
+                }
                 field.setHorizontalAlignment(JTextField.CENTER); //Center text horizontally in the text field.
                 field.setBorder(fieldBorder); //Add the colored border.
                 grid.add(field);
@@ -378,6 +382,6 @@ public class Solver extends Board implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
-        
+
     }
 }
