@@ -7,30 +7,10 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 
 
-public class Solver extends Board implements ActionListener {
+public class Solver extends Board {
 
     Solver(int N, int K) {
         super(N, K);
-        //TODO Auto-generated constructor stub
-    }
-
-    public static void play(int level) {
-        int N = 9, K = 0;
-        switch (level) {
-            case 1:
-                K = 50;
-                break;
-            case 2:
-                K = 35;
-                break;
-
-            default:
-                K = 20;
-                break;
-        }
-        Solver sudoku = new Solver(N, K);
-        sudoku.fillValues();
-        createBoard(sudoku.puzzle);
     }
 
     private static void createWindow() {
@@ -70,6 +50,25 @@ public class Solver extends Board implements ActionListener {
         frame.getContentPane().add(panel, BorderLayout.CENTER);
     }
 
+    public static void play(int level) {
+        int N = 9, K = 0;
+        switch (level) {
+            case 1:
+                K = 50;
+                break;
+            case 2:
+                K = 35;
+                break;
+
+            default:
+                K = 20;
+                break;
+        }
+        Solver sudoku = new Solver(N, K);
+        sudoku.fillValues();
+        createBoard(sudoku.puzzle);
+    }
+
     public static void createBoard(int[][] puzzle) {
         final Border fieldBorder = BorderFactory.createLineBorder(Color.BLACK);
 
@@ -89,25 +88,17 @@ public class Solver extends Board implements ActionListener {
         }
 
         final JPanel centeredGrid = new JPanel(new GridBagLayout());
-        final JPanel input = new JPanel();
         centeredGrid.add(grid);
 
-        JLabel entryMessage = new JLabel("Difficulty Glossary:\n\n Hard - 50/81 blank spaces\n Medium - 35/81 blank spaces\n Easy - 20/81 blank spaces\n");
-        entryMessage.setBounds(10, 20, 80, 25);
-        input.add(entryMessage);
-
-        JTextField difficulty = new JTextField(20);
-        difficulty.setBounds(100, 20, 165, 25);
-        input.add(difficulty);
+    
         final JFrame frame = new JFrame("Sudoku");
-        frame.add(input);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(centeredGrid);
         frame.pack();
-        frame.setLocationByPlatform(true);
         frame.setVisible(true);
     }
 
+    /* I have no use for this right now. Keeping it around in case I'll need it */
 
     // public static void button(Solver sudoku) {
     //     JFrame frame = new JFrame("Click Button To Show Solution");
@@ -123,13 +114,6 @@ public class Solver extends Board implements ActionListener {
 
     // Driver code
     public static void main(String[] args) {
-        //play();
         createWindow();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-
     }
 }
