@@ -11,8 +11,7 @@ public class Board {
         this.K = K;
 
         // Compute square root of N
-        Double SRNd = Math.sqrt(N);
-        SRN = SRNd.intValue();
+        SRN = (int)Math.sqrt(N);
 
         puzzle = new int[N][N];
     }
@@ -68,7 +67,7 @@ public class Board {
         return (int) Math.floor((Math.random() * num + 1));
     }
 
-    boolean isValid( /*int[][] puzzle,*/ int row, int col, int input) {
+    boolean isValid(int row, int col, int input) {
         // check if row contains the input
         for (int d = 0; d < puzzle.length; d++) {
 
@@ -77,7 +76,7 @@ public class Board {
                 return false;
             }
         }
-        // check if column contains the input
+        /* return false if input already appears in column */
         for (int r = 0; r < puzzle.length; r++) {
             /* return false if input already appears in column */
             if (puzzle[r][col] == input) {
@@ -85,12 +84,12 @@ public class Board {
             }
         }
 
-        // check if square contains the input
-        int sqrt = (int) Math.sqrt(puzzle.length);
-        int bRow = row - row % sqrt;
-        int bCol = col - col % sqrt;
-        for (int r = bRow; r < bRow + sqrt; r++) {
-            for (int d = bCol; d < bCol + sqrt; d++) {
+        /* return false if input already appears in square */
+        // int sqrt = (int) Math.sqrt(puzzle.length);
+        int bRow = row - row % SRN;
+        int bCol = col - col % SRN;
+        for (int r = bRow; r < bRow + SRN; r++) {
+            for (int d = bCol; d < bCol + SRN; d++) {
                 if (puzzle[r][d] == input) {
                     return false;
                 }
@@ -137,7 +136,7 @@ public class Board {
         return false;
     }
 
-    boolean solve_sudoku( /*int[][] puzzle, int N*/ ) {
+    boolean solve_sudoku() {
         /*
          * This is the actual code that solves the puzzle.
          * If no solution exists, the function will return false.
@@ -198,8 +197,7 @@ public class Board {
         // board
     }
 
-    // Remove the K no. of digits to
-    // complete game
+    // Remove the K no. of digits to complete the game
     public void removeKDigits() {
         int count = K;
         while (count != 0) {
